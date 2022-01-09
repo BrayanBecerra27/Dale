@@ -1,0 +1,293 @@
+﻿
+@model Dale.Models.VentaViewModel
+@using DaleCore.Models;
+@{
+    ViewBag.Title = "Venta";
+}
+
+<h2>Venta</h2>
+
+@using (Html.BeginForm("NuevoVenta", "Home", FormMethod.Post, new { id = "form-Cliente" }))
+{
+    <div class="row">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Cliente.Cedula)
+            @Html.DropDownListFor(model => model.Cliente.Id, Model.Clientes, "Escoger Cliente", htmlAttributes: new { @class = "form-control", id = "Cliente" })
+
+            @Html.ValidationMessageFor(model => model.Cliente.Id)
+        </div>
+
+        <div class="form-group col-md-3">
+            @Html.LabelFor(model => model.Cliente.Nombre)
+            @Html.TextBoxFor(model => model.Cliente.Nombre, "", htmlAttributes: new { @class = "form-control", @readonly = "readonly", id = "ClienteNombre" })
+
+        </div>
+        <div class="form-group col-md-3">
+            @Html.LabelFor(model => model.Cliente.Apellido)
+            @Html.TextBoxFor(model => model.Cliente.Apellido, "", htmlAttributes: new { @class = "form-control", @readonly = "readonly", id = "ClienteApellido" })
+
+        </div>
+        <div class="form-group col-md-3">
+            @Html.LabelFor(model => model.Cliente.Telefono)
+            @Html.TextBoxFor(model => model.Cliente.Telefono, "", htmlAttributes: new { @class = "form-control", @readonly = "readonly", id = "ClienteTelefono" })
+
+        </div>
+        <div class="form-group col-md-3 invisible">
+            @Html.TextBoxFor(model => model.idVenta, "", htmlAttributes: new { @class = "form-control", @readonly = "readonly" })
+
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="row" style="text-align:right;padding:5px">
+            <div id="AggDetalle"></div>
+            @*<span class="glyphicon glyphicon-pencil"></span>
+                <input type="button" class="btn btn-primary glyphicon glyphicon-plus" onclick="NuevoDetalle()" value="Agregar Producto">*@
+            <button type="button" class="btn btn-primary" onclick="NuevoDetalle()">
+                <span class="glyphicon glyphicon-plus" title="Agregar Producto"></span>
+            </button>
+            @*<a class="btn btn-primary" onclick="NuevoDetalle"><span class="glyphicon glyphicon-plus"></span> Nuevo</a>*@
+        </div>
+        
+        <table class="table" id="tableDetalles">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Valor Unitario</th>
+                    <th>Valor Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var venta in Model.DetallesVenta)
+                {
+                    <tr>
+                        <td>@venta.Producto.Nombre</td>
+                        <td>@venta.Cantidad</td>
+                        <td>@venta.ValorUnitario.ToString("C2")</td>
+                        <td>@venta.ValorTotal.ToString("C2")</td>
+
+
+
+                        <td>
+                            <button type="button" class="btn btn-primary" onclick="EditarDetalle(@venta.Id, @venta.Producto.Id)">
+                                <span class="glyphicon glyphicon-pencil" title="Editar Producto"></span>
+                            </button>
+                            @* <a class="btn btn-default" href="~/Home/EditarProducto/@venta.Id" title="Editar"><span class="glyphicon glyphicon-pencil"></span></a>*@
+                            @*<button type="button" class="btn btn-primary" onclick="EliminarDetalle(@venta.Id, @venta.Producto.Id)">
+                            <span class="glyphicon glyphicon-remove" title="Editar Producto"></span>
+                        </button>*@
+                            <a class="btn btn-danger" href="~/Home/EliminarDetalleVenta?id=@venta.Id&idProducto=@venta.Producto.Id" title="Eliminar"><span class="glyphicon glyphicon-remove"></span> </a>
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>Total</th>
+                    <th>Total</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <input type="submit" value="Guardar" />
+}
+
+
+<div id='myModal' class='modal fade'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'>
+                <div class="modal-header">
+                    Producto Vendido
+                </div>
+                <div class="modal-body">
+
+                    @using (Html.BeginForm("NuevoProductoVenta", "Home", FormMethod.Post, new { id = "form-AggProducto" }))
+                    {
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(model => model.DetalleVenta.Producto.Nombre)
+                                @Html.DropDownListFor(model => model.Producto.Id, Model.Productos, "Escoger Producto", htmlAttributes: new { @class = "form-control", id = "Producto" })
+                                @Html.ValidationMessageFor(model => model.Producto.Id)
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(model => model.DetalleVenta.Cantidad)
+                                @Html.TextBoxFor(model => model.DetalleVenta.Cantidad, "", htmlAttributes: new { @class = "form-control", id = "Cantidad" })
+
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(model => model.DetalleVenta.ValorUnitario)
+                                @Html.TextBoxFor(model => model.DetalleVenta.ValorUnitario, "", htmlAttributes: new { @class = "form-control", @readonly = "readonly", id = "ValorUnitario"})
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(model => model.DetalleVenta.ValorTotal)
+                                @Html.TextBoxFor(model => model.DetalleVenta.ValorTotal, "", htmlAttributes: new { @class = "form-control", @readonly = "readonly", id = "ValorTotal" })
+                            </div>
+                            <div class="form-group col-md-3 invisible">
+                                @Html.TextBoxFor(model => model.DetalleVenta.Id, "", htmlAttributes: new { @class = "form-control", @readonly = "readonly", id = "idDetalleVenta"  })
+
+                            </div>
+                            <div class="form-group col-md-3 invisible">
+                                @Html.TextBoxFor(model => model.DetalleVenta.IdTemporal, "", htmlAttributes: new { @class = "form-control", @readonly = "readonly", id = "IdTemporal"  })
+
+                            </div>
+
+                        </div>
+                        <input type="submit" value="Guardar" id="btnPopup" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+
+</script>
+@section Scripts {
+
+    @* @Scripts.Render("~/bundles/jqueryval")*@
+    <script>
+
+    $('#Cliente').change(function () {
+        var selectedCliente = $("#Cliente").val();
+        if (selectedCliente != null && selectedCliente != '') {
+            $.getJSON('@Url.Action("GetCliente")', { idCliente: selectedCliente }, function (data) {
+                if (data != null && !jQuery.isEmptyObject(data))
+                {
+                    $("#ClienteNombre").val(data.Nombre);
+                    $("#ClienteApellido").val(data.Apellido);
+                    $("#ClienteTelefono").val(data.Telefono);
+                }
+            });
+        }
+
+
+
+    });
+
+        $('#Producto').change(function () {
+        var selectedProducto = $("#Producto").val();
+            $.getJSON('@Url.Action("GetProducto")', { idProducto: selectedProducto }, function (data) {
+                if (data != null && !jQuery.isEmptyObject(data))
+                {
+                    $("#ValorUnitario").val(data.ValorUnitario);
+                    var cantidad = $("#Cantidad").val();
+                    if (cantidad != null && cantidad != "") {
+                        var valorTotal = cantidad * data.ValorUnitario;
+                        $("#ValorTotal").val(valorTotal);
+                    }
+                }
+            });
+        });
+
+        $('#Cantidad').change(function () {
+            var cantidad = $("#Cantidad").val();
+            var valorUnitario = $("#ValorUnitario").val();
+            if (cantidad != null && cantidad != "" && valorUnitario != null && valorUnitario != "") {
+                var valorTotal = cantidad * valorUnitario;
+                $("#ValorTotal").val(valorTotal);
+            }
+            console.log("selectedProducto", selectedProducto);
+            $.getJSON('@Url.Action("GetProducto")', { idProducto: selectedProducto }, function (data) {
+                if (data != null && !jQuery.isEmptyObject(data))
+                {
+                    $("#ValorUnitario").val(data.ValorUnitario);
+                    var cantidad = $("#Cantidad").val();
+                    if (cantidad != null && cantidad != "") {
+                        var valorTotal = cantidad * data.ValorUnitario;
+                        $("#ValorTotal").val(valorTotal);
+                    }
+                }
+            });
+        });
+
+        function NuevoDetalle() {
+            if ($('#Cliente').val() != "" ) {
+                $("#ValorUnitario").val(null);
+                $("#ValorTotal").val(null);
+                $("#Cantidad").val(null);
+                $("#Producto").val(null);
+                $("#idDetalleVenta").val(null);
+                $("#IdTemporal").val(null);
+                $('#myModal').modal('show');
+            }
+            else {
+                alert("Debe seleccionar cliente al cual se le va a realizar la venta")
+            }
+
+        }
+
+        function EditarDetalle(data1, data2) {
+             $.getJSON('@Url.Action("GetDetalleVenta")', { id: data1, idProducto: data2 }, function (data) {
+                if (data != null && !jQuery.isEmptyObject(data))
+                {
+                    console.log(data)
+                    $("#ValorUnitario").val(data.ValorUnitario);
+                    $("#ValorTotal").val(data.ValorTotal);
+                    $("#Cantidad").val(data.Cantidad);
+                    $("#Producto").val(data.Producto.Id);
+                    $("#idDetalleVenta").val(data.Id);
+                    $("#IdTemporal").val(data.IdTemporal);
+                    $('#myModal').modal('show');
+                }
+            });
+        }
+
+
+        function LimpiaPopup() {
+            console.log("LimpiaPopup")
+            $("#ValorUnitario").val(null);
+            $("#ValorTotal").val(null);
+            $("#Cantidad").val(null);
+            $("#Producto").val(null);
+        }
+
+        $('#btnPopup').click(function () {
+             console.log("LimpiaPopup1")
+            setTimeout(function () {
+                LimpiaPopup();
+            }, 2000);
+
+        });
+
+
+        $(document).ready(function ()
+        {
+            //Defino los totales de mis 2 columnas en 0
+            var total_ValorUnitario = 0;
+            var total_ValorTotal = 0;
+            //Recorro todos los tr ubicados en el tbody
+            $('#tableDetalles tbody').find('tr').each(function (i, el) {
+                console.log(i, el)
+                console.log($(this).find('td').eq(2).text().replace(/[$.]/g,''))
+                //Voy incrementando las variables segun la fila ( .eq(0) representa la fila 1 )
+                total_ValorUnitario += parseFloat($(this).find('td').eq(2).text().replace(/[$.]/g,''));
+                total_ValorTotal += parseFloat($(this).find('td').eq(3).text().replace(/[$.]/g,''));
+
+            });
+            const formatter = new Intl.NumberFormat('en-US', {
+
+                currency: 'USD',
+                minimumFractionDigits: 0
+            })
+            //Muestro el resultado en el th correspondiente a la columna
+            $('#tableDetalles tfoot tr th').eq(2).text("Total " + formatter.format(total_ValorUnitario));
+            $('#tableDetalles tfoot tr th').eq(3).text("Total " + formatter.format(total_ValorTotal));
+            console.log(total_ValorUnitario)
+            console.log(total_ValorTotal)
+
+});
+    </script>
+
+
+}

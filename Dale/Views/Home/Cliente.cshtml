@@ -1,0 +1,35 @@
+﻿@model DaleCore.Models.Cliente
+@{
+    ViewBag.Title = "Cliente";
+}
+
+<h2>Cliente</h2>
+
+@using (Html.BeginForm("NuevoCliente", "Home"))
+{
+<div class="row">
+    <div class="form-group col-md-3">
+
+        @Html.LabelFor(d => d.Cedula)
+        @Html.TextBoxFor(d => d.Cedula)
+    </div>
+    <div class="form-group col-md-3">
+
+        @Html.LabelFor(d => d.Nombre)
+        @Html.TextBoxFor(d => d.Nombre)
+    </div>
+    <div class="form-group col-md-3">
+        @Html.LabelFor(d => d.Apellido)
+        @Html.TextBoxFor(d => d.Apellido)
+    </div>
+    <div class="form-group col-md-3">
+        @Html.LabelFor(d => d.Telefono)
+        @Html.TextBoxFor(d => d.Telefono)
+    </div>
+    <div class="form-group col-md-3 invisible">
+        @Html.TextBoxFor(d => d.Id)
+    </div>
+
+</div>
+    <input type="submit" value="Guardar" />
+}

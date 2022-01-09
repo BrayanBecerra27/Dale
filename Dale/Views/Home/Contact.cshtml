@@ -1,0 +1,37 @@
+﻿@model List<DaleCore.Models.Venta>
+@{
+    ViewBag.Title = "Venta";
+}
+
+<div class="row" style="text-align:right;padding:5px">
+    <a href="~/Home/Venta" class="btn btn-primary"> <span class="glyphicon glyphicon-plus"></span> Nuevo</a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Cédula</th>
+            <th>Fecha Venta</th>
+            <th>Valor Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var venta in Model)
+        {
+            <tr>
+                <td>@venta.Cliente.Nombre</td>
+                <td>@venta.Cliente.Apellido</td>
+                <td>@venta.Cliente.Cedula</td>
+                <td>@venta.Fecha</td>
+                <td>@venta.ValorTotal.ToString("C2")</td>
+                <td>
+                    <a class="btn btn-default" href="~/Home/EditarVenta/@venta.Id" title="Editar"><span class="glyphicon glyphicon-pencil"></span> </a>
+                    <a class="btn btn-danger" href="~/Home/EliminarVenta/@venta.Id" title="Eliminar"><span class="glyphicon glyphicon-remove"></span> </a>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+
+</table>

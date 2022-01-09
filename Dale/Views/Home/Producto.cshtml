@@ -1,0 +1,28 @@
+﻿@model DaleCore.Models.Producto
+@{
+    ViewBag.Title = "Producto";
+}
+
+<h2>Producto</h2>
+
+
+
+@using (Html.BeginForm("NuevoProducto", "Home"))
+{
+<div class="row">
+    <div class="form-group col-md-3">
+        @Html.LabelFor(d => d.Nombre)
+        @Html.TextBoxFor(d => d.Nombre)
+    </div>
+    <div class="form-group col-md-3">
+        @Html.LabelFor(d => d.ValorUnitario)
+        @Html.TextBoxFor(d => d.ValorUnitario)
+    </div>
+    <div class="form-group col-md-3 invisible" >
+            @Html.TextBoxFor(d => d.Id)
+        </div>
+
+    </div>
+    <input type="submit" value="Guardar" />
+}
+<script src="~/Scripts/DaleJS/Producto.js"></script>

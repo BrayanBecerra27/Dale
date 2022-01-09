@@ -1,0 +1,63 @@
+﻿@using DaleCore.Models;
+@model List<DaleCore.Models.Producto>
+
+@{
+    ViewBag.Title = "Producto";
+    Producto productoNew = new Producto();
+}
+
+<div class="row" style="text-align:right;padding:5px">
+    <a href="~/Home/Producto" class="btn btn-primary" ><span class="glyphicon glyphicon-plus"></span> Nuevo</a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Valor Unitario</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var producto in Model)
+        {
+            <tr>
+                <td>@producto.Nombre</td>
+                <td>@producto.ValorUnitario.ToString("C2")</td>
+                <td>
+                     <a class="btn btn-default" href="~/Home/EditarProducto/@producto.Id" title="Editar"><span class="glyphicon glyphicon-pencil" ></span></a>
+                    
+                    <a class="btn btn-danger" href="~/Home/EliminarProducto/@producto.Id" title="Eliminar"><span class="glyphicon glyphicon-remove"></span> </a>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+
+</table>
+
+<div class="modal fade bootstrapmodal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Producto
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("NuevoProducto", "Home"))
+                {
+                    <div>
+                        @Html.LabelFor(Model => productoNew.Nombre)
+                        @Html.EditorFor(Model => productoNew.Nombre)
+                    </div> 
+                    <div>
+                        @Html.LabelFor(Model => productoNew.ValorUnitario)
+                        @Html.EditorFor(Model => productoNew.ValorUnitario)
+                      
+
+                    </div>
+                    <input type="submit" value="Guardar" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/DaleJS/Producto.js"></script>
